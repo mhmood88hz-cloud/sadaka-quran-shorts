@@ -102,7 +102,10 @@ def _make_frame(verse: dict) -> Image.Image:
     img = _make_background().convert("RGBA")
     draw = ImageDraw.Draw(img)
 
-    arabic_font = ImageFont.truetype(str(FONTS_DIR / "Amiri-Bold.ttf"), 76)
+    # BASIC layout engine: we already reshape/reorder the Arabic ourselves, and letting
+    # Pillow's raqm engine (when available, e.g. on Linux CI) shape it a second time
+    # garbles the text -- BASIC draws glyphs as given, with no engine involved.
+    arabic_font = ImageFont.truetype(str(FONTS_DIR / "Amiri-Bold.ttf"), 76, layout_engine=ImageFont.Layout.BASIC)
     en_font = ImageFont.truetype(str(FONTS_DIR / "Poppins-Regular.ttf"), 40)
     de_font = ImageFont.truetype(str(FONTS_DIR / "Poppins-Regular.ttf"), 36)
     attribution_font = ImageFont.truetype(str(FONTS_DIR / "Poppins-Medium.ttf"), 32)
