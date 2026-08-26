@@ -18,7 +18,7 @@ OUTPUT_DIR = ROOT / "output"
 
 W, H = 1080, 1920
 FPS = 30
-MAX_DURATION = 59  # keep well inside Shorts/Reels/TikTok short-form limits
+MAX_DURATION = 90  # keep well inside Shorts/Reels/TikTok short-form limits
 
 
 def _download_audio(url: str, dest: Path) -> Path:
