@@ -9,7 +9,7 @@ import requests
 API_BASE = "https://api.alquran.cloud/v1/ayah"
 # Change RECITER to any audio edition identifier from
 # https://api.alquran.cloud/v1/edition/format/audio (e.g. ar.alafasy, ar.husary).
-RECITER = os.environ.get("RECITER_EDITION", "ar.abdurrahmaansudais")
+RECITER = os.environ.get("RECITER_EDITION") or "ar.abdurrahmaansudais"
 TOTAL_AYAHS = 6236
 
 STATE_FILE = Path(__file__).resolve().parent.parent / "state" / "used_verses.json"
