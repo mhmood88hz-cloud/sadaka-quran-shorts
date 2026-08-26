@@ -79,9 +79,23 @@ def _draw_centered_lines(draw, lines, font, y, max_width, fill, line_spacing=1.3
     return y + len(lines) * line_height
 
 
-def _shape_arabic(text: str) -> str:
-    reshaped = arabic_reshaper.reshape(text)
-    return get_display(reshaped)
+def _wrap_arabic_lines(text: str, font: ImageFont.FreeTypeFont, max_width: int, draw: ImageDraw.ImageDraw) -> list:
+    """Wrap Arabic text into lines, keeping logical (reading) word order while wrapping,
+    then apply bidi reordering per finished line -- reordering the whole text up front
+    before wrapping scrambles which words land on which line."""
+    words = [arabic_reshaper.reshape(w) for w in text.split()]
+    lines, current = [], []
+    for word in words:
+        trial = current + [word]
+        if draw.textlength(" ".join(trial), font=font) <= max_width:
+            current = trial
+        else:
+            if current:
+                lines.append(current)
+            current = [word]
+    if current:
+        lines.append(current)
+    return [get_display(" ".join(line_words)) for line_words in lines]
 
 
 def _make_frame(verse: dict) -> Image.Image:
@@ -96,8 +110,7 @@ def _make_frame(verse: dict) -> Image.Image:
     margin = 90
     content_w = W - 2 * margin
 
-    arabic_display = _shape_arabic(verse["text_ar"])
-    arabic_lines = _wrap(arabic_display, arabic_font, content_w, draw)
+    arabic_lines = _wrap_arabic_lines(verse["text_ar"], arabic_font, content_w, draw)
 
     en_lines = textwrap.wrap(f'"{verse["text_en"]}"', width=34)
     de_lines = textwrap.wrap(f'"{verse["text_de"]}"', width=38)
