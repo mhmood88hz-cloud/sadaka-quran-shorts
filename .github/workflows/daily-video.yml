@@ -2,7 +2,7 @@ name: Daily Quran Short
 
 on:
   schedule:
-    - cron: "0 8 * * *" # 08:00 UTC daily
+    - cron: "17 8 * * *" # ~08:17 UTC daily -- off the hour to avoid GitHub's busiest cron-minute queue delays
   workflow_dispatch: {}
 
 permissions:
